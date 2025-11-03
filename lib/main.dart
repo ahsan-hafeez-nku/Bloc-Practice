@@ -58,13 +58,46 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_bloc_tut/features/auth/bloc/auth_bloc.dart';
+// import 'package:flutter_bloc_tut/features/auth/login_screen.dart';
+// import 'package:flutter_bloc_tut/features/auth/pallete.dart';
+// import 'package:flutter_bloc_tut/app_bloc_observer.dart';
+
+// void main() {
+//   Bloc.observer = AppBlocObserver();
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (context) => AuthBloc(),
+//       child: MaterialApp(
+//         title: 'Bloc Auth',
+//         theme: ThemeData.dark().copyWith(
+//           scaffoldBackgroundColor: Pallete.backgroundColor,
+//         ),
+//         home: const LoginScreen(),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_tut/features/auth/bloc/auth_bloc.dart';
-import 'package:flutter_bloc_tut/features/auth/login_screen.dart';
-import 'package:flutter_bloc_tut/features/auth/pallete.dart';
+import 'package:flutter_bloc_tut/app_bloc_observer.dart';
+import 'package:flutter_bloc_tut/features/weather/bloc/weather_bloc.dart';
+import 'package:flutter_bloc_tut/features/weather/data/data_provider/weather_data_provider.dart';
+import 'package:flutter_bloc_tut/features/weather/data/repository/weather_repository.dart';
+import 'package:flutter_bloc_tut/features/weather/presentation/screen/weather_screen.dart';
 
 void main() {
+  Bloc.observer = AppBlocObserver();
   runApp(const MyApp());
 }
 
@@ -73,14 +106,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthBloc(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: Pallete.backgroundColor,
+    return RepositoryProvider(
+      create: (context) => WeatherRepository(WeatherDataProvider()),
+      child: BlocProvider(
+        create: (context) => WeatherBloc(context.read<WeatherRepository>()),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark(useMaterial3: true),
+          home: const WeatherScreen(),
         ),
-        home: const LoginScreen(),
       ),
     );
   }

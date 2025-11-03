@@ -18,110 +18,106 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthFailure) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
-        }
-        if (state is AuthSuccess) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
-        }
-      },
-
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Sign in',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40,
-                      letterSpacing: -0.5,
-                      color: Pallete.gradient1,
-                    ),
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Sign in',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40,
+                    letterSpacing: -0.5,
+                    color: Pallete.gradient1,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Access your account',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 40),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Access your account',
+                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 40),
 
-                  // Email
-                  LoginField(hintText: 'Email', controller: emailController),
-                  const SizedBox(height: 16),
+                // Email
+                LoginField(hintText: 'Email', controller: emailController),
+                const SizedBox(height: 16),
 
-                  // Password
-                  LoginField(
-                    hintText: 'Password',
-                    controller: passwordController,
-                  ),
-                  const SizedBox(height: 28),
+                // Password
+                LoginField(
+                  hintText: 'Password',
+                  controller: passwordController,
+                ),
+                const SizedBox(height: 28),
 
-                  // Button
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, state) {
-                      return GradientButton(
-                        loading: state is AuthLoading ? true : false,
-                        onPress: () => context.read<AuthBloc>().add(
-                          LoginEvent(
-                            emailController.text.trim(),
-                            passwordController.text.trim(),
-                          ),
-                        ),
+                // Button
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthFailure) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.errorMessage)),
                       );
-                    },
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  // OR divider
-                  Row(
-                    children: [
-                      const Expanded(child: Divider(thickness: 1)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          'or',
-                          style: TextStyle(color: Colors.grey[600]),
+                    }
+                    if (state is AuthSuccess) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(state.message)));
+                    }
+                  },
+                  builder: (context, state) {
+                    return GradientButton(
+                      loading: state is AuthLoading ? true : false,
+                      onPress: () => context.read<AuthBloc>().add(
+                        LoginEvent(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
                         ),
                       ),
-                      const Expanded(child: Divider(thickness: 1)),
-                    ],
-                  ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 25),
 
-                  const SizedBox(height: 20),
-
-                  // Footer
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don’t have an account?",
+                // OR divider
+                Row(
+                  children: [
+                    const Expanded(child: Divider(thickness: 1)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'or',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
-                      const SizedBox(width: 5),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Sign up",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
+                    ),
+                    const Expanded(child: Divider(thickness: 1)),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // Footer
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don’t have an account?",
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(width: 5),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "Sign up",
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
